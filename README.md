@@ -21,6 +21,7 @@ This is new version of [hcep-pdf-server](https://github.com/uyamazak/hcep-pdf-se
 # Getting Started
 
 ## Clone
+
 git clone this repository.
 
 You can try it in 2 ways: 1.`Docker` or 2.`Local`
@@ -28,6 +29,7 @@ You can try it in 2 ways: 1.`Docker` or 2.`Local`
 ## 1. Docker
 
 ### Requirement
+
 You need install docker.
 
 https://docs.docker.com/get-docker/
@@ -39,6 +41,7 @@ docker build -t hc-pdf-server:latest .
 ```
 
 ### Install Fonts (optionary)
+
 If you wanto to convert pages in Japanese, Chinese or languages other than English with Docker.
 
 You will need to install each font files.
@@ -46,9 +49,9 @@ You will need to install each font files.
 Also, you can use WEB fonts, but since it takes a long time for requesting and downloading them,
 we recommend that install the font files in the server.
 
-
 #### 1. From font file
-Add your font files (ex. *.otf) to `fonts/` dir.
+
+Add your font files (ex. \*.otf) to `fonts/` dir.
 
 ```zsh
 cp AnyFonts.ttf ./fonts/
@@ -61,6 +64,7 @@ docker build -t hc-pdf-server:latest .
 ```
 
 #### 2. From apk package
+
 You can use build-arg `ADDITONAL_FONTS` as package names.
 
 See below available font package names.
@@ -77,7 +81,9 @@ docker build \
   --build-arg ADDITONAL_FONTS="font-noto-cjk font-ipa" \
   -t hc-pdf-server:latest .
 ```
+
 ### Run
+
 ```zsh
 docker run -it -p 8080:8080 hc-pdf-server:latest
 ```
@@ -85,52 +91,69 @@ docker run -it -p 8080:8080 hc-pdf-server:latest
 ## 2. Local (for development use)
 
 ### Requirement
+
 You need to install Node.js and yarn.
 
 - [Node.js](https://nodejs.org/)
 - [yarn](https://classic.yarnpkg.com/)
 
 install packages
+
 ```zsh
 yarn install
 ```
 
 start dev server
+
 ```zsh
 yarn dev
 ```
 
 lint and fix
+
 ```zsh
 yarn lint
 ```
 
 compile ts files
+
 ```zsh
 yarn build
 ```
 
 launch server
+
 ```zsh
 yarn start
 ```
 
 # Usage
+
 ## GET request '/' with URL parameter
 
 ```zsh
 curl "http://localhost:8080?url=http://example.com" -o hcpdf-get.pdf
 ```
+
 [hcpdf-get.pdf](/docs/pdf-samples/hcpdf-get.pdf)
 
-## POST request '/' with HTML parameter
-`html` parameter should be urlencoded beforehand, as the inclusion of certain characters (e.g. "&") can cause problems.
+## POST request '/' with HTML body
 
 ```zsh
-curl -sS http://localhost:8080 -v \
-  --data-urlencode html="<html><p>hcpdf <strong>ok</strong></p></html>"\
-  -o hcpdf-post.pdf
+curl --request POST \
+  --url http://localhost:8080/ \
+  --header 'content-type: text/plain' \
+  --data '<!DOCTYPE html>
+<html>
+<body>
+<p style="font-family:Arial">This is another paragraph - Arial.</p>
+<p style="font-family:Courier">This is another paragraph - Courier.</p>
+<p style="font-family:Comic Sans MS">This is another paragraph - Comic Sans MS.</p>
+<p style="font-family:Times New Roman">This is another paragraph - Times New Roman.</p>
+</body>
+</html>'
 ```
+
 [hcpdf-post.pdf](/docs/pdf-samples/hcpdf-post.pdf)
 
 # Customize PDF options by preset name
@@ -177,8 +200,8 @@ $ curl http://localhost:8080/pdf_options
 {"A4":{"format":"A4","margin":{"top":"10mm","bottom":"10mm","left":"10mm","right":"10mm"},"printBackground":true},"A3":{"format":"A3","margin":{"top":"10mm","bottom":"10mm","left":"10mm","right":"10mm"},"printBackground":true},"A4L":{"format":"A4","landscape":true,"margin":{"top":"10mm","bottom":"10mm","left":"10mm","right":"10mm"},"printBackground":true},"A3L":{"format":"A3","landscape":true,"margin":{"top":"10mm","bottom":"10mm","left":"10mm","right":"10mm"},"printBackground":true}}
 ```
 
-
 # Bearer Authorization
+
 You can enable bearer auth by setting your secret key to `HCPDF_BEARER_AUTH_SECRET_KEY` (default empty, disabled) .
 
 This application can be exploited if it is published on a global network, as it allows you to manipulate Chrome.
@@ -214,6 +237,7 @@ If you increase the number of pages, the memory required will also increase, so 
 # Configs by environment variables
 
 ## Others
+
 Other settings can be changed by environment variables. See the following file for details.
 
 [src/config.ts](src/config.ts)
@@ -227,8 +251,8 @@ yarn test
 ```
 
 ### Result example
-![test result example](docs/img/test-result.png)
 
+![test result example](docs/img/test-result.png)
 
 ## Docker
 
@@ -236,18 +260,21 @@ yarn test
 # before you need build image
 docker run hc-pdf-server:latest yarn test
 ```
+
 # License
+
 Licensed under [Apache License](LICENSE)
 
 # Contributing
+
 Pull requests, Issues, [GitHub Sponsors](https://github.com/sponsors/uyamazak/) are welcome.
 
 # Contributors ✨
+
 Thanks!
 
 - [salos1982](https://github.com/salos1982)
 
 # Author
+
 [uyamazak](https://github.com/uyamazak)
-
-

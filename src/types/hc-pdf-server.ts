@@ -5,11 +5,6 @@ export interface getQuerystring {
   pdf_option?: string
 }
 
-export interface postBody {
-  html: string
-  pdf_option?: string
-}
-
 export interface AppConfig {
   presetPdfOptionsFilePath: string
   defaultPresetPdfOptionsName: string

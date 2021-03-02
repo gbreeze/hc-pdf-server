@@ -1,10 +1,9 @@
 import fastify, { FastifyInstance } from 'fastify'
-import formBody from 'fastify-formbody'
 import bearerAuthPlugin from 'fastify-bearer-auth'
 import { Page } from 'puppeteer'
 import { hcPages } from '@uyamazak/fastify-hc-pages'
 import { hcPDFOptionsPlugin } from './plugins/pdf-options'
-import { AppConfig, getQuerystring, postBody } from './types/hc-pdf-server'
+import { AppConfig, getQuerystring } from './types/hc-pdf-server'
 import {
   DEFAULT_PRESET_PDF_OPTIONS_NAME,
   BEARER_AUTH_SECRET_KEY,
@@ -22,13 +21,6 @@ import {
 const getSchema = {
   querystring: {
     url: { type: 'string' },
-    pdf_option: { type: ['null', 'string'] },
-  },
-}
-
-const postSchema = {
-  body: {
-    html: { type: 'string' },
     pdf_option: { type: ['null', 'string'] },
   },
 }
@@ -80,7 +72,6 @@ export const app = async (
   server.register(hcPDFOptionsPlugin, {
     filePath: presetPdfOptionsFilePath,
   })
-  server.register(formBody)
   server.register(hcPages, {
     pageOptions: {
       pagesNum,
@@ -125,19 +116,17 @@ export const app = async (
   })
 
   server.post<{
-    Body: postBody
-  }>('/', { schema: postSchema }, async (request, reply) => {
-    const body = request.body ?? null
+    Querystring: getQuerystring
+    Body: string
+  }>('/', async (request, reply) => {
+    const body = request.body
     if (!body) {
-      reply.code(400).send({ error: 'request body is empty' })
+      reply.code(400).send({ error: 'request body (html) is empty' })
       return
     }
-    const html = body.html ?? ''
-    if (!html) {
-      reply.code(400).send({ error: 'html is required' })
-      return
-    }
-    const pdfOptionsQuery = body.pdf_option ?? defaultPresetPdfOptionsName
+    const html = body
+    const pdfOptionsQuery =
+      request.query.pdf_option ?? defaultPresetPdfOptionsName
     const pdfOptions = server.getPDFOptions(pdfOptionsQuery)
 
     try {
