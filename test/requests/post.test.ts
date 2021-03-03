@@ -28,9 +28,7 @@ test('POST request test', async (t) => {
     const res = await app.inject({
       method: 'POST',
       url: '/',
-      body: {
-        html: '',
-      },
+      body: '',
     } as InjectOptions)
     t.equal(res.statusCode, 400)
     t.end()
@@ -40,11 +38,9 @@ test('POST request test', async (t) => {
     const app = await build(t)
     const res = await app.inject({
       method: 'POST',
-      url: '/',
-      body: {
-        pdf_option: DEFAULT_PRESET_PDF_OPTIONS_NAME,
-        html: TEST_POST_HTML,
-      },
+      url: `/?pdf_option=${DEFAULT_PRESET_PDF_OPTIONS_NAME}`,
+      body: TEST_POST_HTML,
+      headers: { 'content-type': 'text/plain' },
     } as InjectOptions)
     t.equal(res.statusCode, 200)
     t.equal(res.headers['content-type'], 'application/pdf')
